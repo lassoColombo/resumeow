@@ -1,0 +1,82 @@
+name: Friedrich Mice
+img: img.png
+color: "304263"
+language: en
+profile:
+  - Metaphysical programmer and architect of digital chaos.
+  - Expert in deconstructing systems and reinventing them according to the will to power.
+  - Currently a free thinker and relentless critic of modern cybersecurity.
+desiderata:
+  - I seek a position that does not reduce me to a mere cog in the system.
+  - I want to shape new software architectures free from the morality of mediocre code.
+  - I desire to work with individuals capable of staring into the abyss of debugging without fearing the reflection.
+languages:
+  - Native German
+  - Fluent French (with disdain for imposed syntax)
+  - Python, the language beyond good and mostly evil
+contacts:
+  mail: nietzsche.uberprog@willtopower.dev
+  phone: +49\,420\,000\,0000
+  links:
+    - link: https://github.com/ubermenschCode
+      display: "GitHub: überCode"
+    - link: https://www.linkedin.com/in/nietzsche-dev/
+      display: "LinkedIn: Friedrich 'Segfault' Nietzsche"
+key_competences:
+  - name: Creative Destruction
+    text: Every system must be annihilated before it can be rewritten in a superior form. The refactoring process is not merely about optimization; it is an existential transformation. Only by tearing down outdated paradigms can true innovation emerge. Anything less is stagnation.
+  - name: Automation of the Will
+    text: The strong do not waste time on repetitive tasks. I develop automation tools that liberate engineers from the shackles of mundane labor, allowing them to focus on higher-order thinking. An efficient system is one that runs itself, evolving continuously without human frailty interfering.
+  - name: Applied Dionysian Thought
+    text: The rigid, structured approach to programming is a relic of an obsolete mindset. I embrace chaos as a force of creation, allowing intuition to guide development. Code must be alive, dynamic, and unconstrained by dogmatic principles. Through disciplined anarchy, true breakthroughs are achieved.
+  - name: Cybersecurity
+    text: Security is an illusion for those who refuse to see the inevitable entropy of all systems. I dissect security models not to defend, but to expose their flaws, ensuring they are rebuilt stronger. A system is only as secure as its ability to survive its own vulnerabilities.
+  - name: Algorithms of Fate
+    text: Predicting software failure is an art and a science. Through deep analysis and philosophical inquiry, I craft models that foresee the collapse of systems before they happen. To understand failure is to understand existence itself—an inevitability to be embraced, not feared.
+  - name: Existential Debugging
+    text: Debugging is not merely a technical process but a confrontation with the abyss. To debug is to confront the infinite recursion of human error, exposing the fragile nature of code and its creators.
+  - name: Übermensch Code Review
+    text: Reviewing code is a moral imperative. Mediocrity must be eradicated, and only the strongest functions should survive. I refactor with a hammer, forging code that stands beyond good and evil.
+transversal_competences:
+  - name: Vision Beyond the Bug
+    text: The ability to grasp the true essence of the problem beyond its immediate manifestation.
+  - name: Ruthless Critique
+    text: Mediocre code must be faced with the hammer, not with refactoring.
+  - name: Resilience to Frustration
+    text: Eternal debugging as a metaphor for the human condition.
+work_experiences:
+  - title: Philosopher of Code
+    company: Himself
+    dates: 1844 - Present
+    description: I write software that questions the very existence of software. My code is a shadow on Plato’s cave.
+    items:
+      - project: ÜberCompiler
+        text: A compiler that only accepts code worthy of existence.
+      - project: WillToPowerOS
+        text: An operating system that only updates if it deems its user strong enough.
+  - title: Existential Hacker
+    company: Humanity (unrequested)
+    dates: Always
+    description: I break systems, not to destroy them, but to reveal their true fragile and illusory nature.
+    items:
+      - project: Zarathustra Protocol
+        text: A communication protocol that ignores common syntax and rewards pure intuition.
+  - title: Architect of the Eternal Return
+    company: The Infinite Loop Initiative
+    dates: Indefinite
+    description: Designing recursion structures and infinite loops that reflect the true nature of reality and existence.
+    items:
+      - project: RecursiveReality
+        text: A framework for developing software that continuously rebuilds itself through endless iteration.
+      - project: Nietzschean Stack Overflow
+        text: An AI-driven debugging assistant that only answers if the user has demonstrated sufficient will to power.
+education:
+  - title: Degree in Philosophy and Programming of Fate
+    institution: University of Chaos
+    grade: Magna cum nihil
+  - title: CKAD Certification (Certified Kubernetes Amoral Developer)
+    institution: CNCF
+    grade: Passed with will to power
+  - title: Diploma in Self-Destruction and Eternal Debugging
+    institution: School of Life
+    grade: 42/100
