@@ -21,6 +21,7 @@ nu template.nu --input <path_to_input.yaml> --template <path_to_template.tex> --
 ```
 
 - `--input`: Path to the YAML file containing the CV data.
+- `--template`: The input to the template file to use. The only template supported as of now is [template.tex](template.tex)
 - `--output`: Path where the generated .tex will be saved.
 
 ### YAML Input File
