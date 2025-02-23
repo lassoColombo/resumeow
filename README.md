@@ -1,4 +1,4 @@
-# ResuMeow
+# ResuMeowas a cover
 Welcome to Reslumeow! An automaic CV generator written in nu.
 
 This brutal script allows you to create a beautifully formatted CV in LaTeX from a simple YAML input file and command-line parameters.
@@ -17,7 +17,7 @@ This brutal script allows you to create a beautifully formatted CV in LaTeX from
 To generate a CV, use the following command:
 
 ```bash
-nu template.nu --input <path_to_input_yaml> --output <output_pdf_path>
+nu template.nu --input <path_to_input_yaml> --output <output_tex_path>
 ```
 
 - `--input`: Path to the YAML file containing the CV data.
