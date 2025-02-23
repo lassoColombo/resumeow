@@ -4,10 +4,10 @@ Welcome to Reslumeow! An automaic CV generator written in nu.
 This brutal script allows you to create a beautifully formatted CV in LaTeX from a simple YAML input file and command-line parameters.
 
 <h1 align="center">
-  <img src="imgs/mascot.jpg" alt="Local Image">
+  <img src="docs/imgs/mascot.jpg" alt="Local Image">
 </h1>
 <h3 align="center">
-  <a href="imgs/example_cv.pdf">View an example</a>
+  <a href="docs/imgs/example_cv.pdf">View an example</a>
 </h3>
 
 ## Usage
@@ -17,10 +17,11 @@ This brutal script allows you to create a beautifully formatted CV in LaTeX from
 To generate a CV, use the following command:
 
 ```bash
-nu template.nu --input <path_to_input_yaml> --output <output_pdf_path>
+nu template.nu --input <path_to_input.yaml> --template <path_to_template.tex> --output <path_to_output.tex>
 ```
 
 - `--input`: Path to the YAML file containing the CV data.
+- `--template`: The input to the template file to use. The only template supported as of now is [template.tex](template.tex)
 - `--output`: Path where the generated .tex will be saved.
 
 ### YAML Input File
