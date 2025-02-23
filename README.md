@@ -17,7 +17,7 @@ This brutal script allows you to create a beautifully formatted CV in LaTeX from
 To generate a CV, use the following command:
 
 ```bash
-nu template.nu --input <path_to_input_yaml> --output <output__path>
+nu template.nu --input <path_to_input.yaml> --template <path_to_template.tex> --output <path_to_output.tex>
 ```
 
 - `--input`: Path to the YAML file containing the CV data.

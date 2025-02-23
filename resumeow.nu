@@ -57,8 +57,8 @@ let headers = {
   }
 }
 
-def main [--input: string, --output: string] {
-  mut template = open --raw template.tex
+def main [--input: string, --template: string, --output: string] {
+  mut template = open --raw $template
   let data = open $input
 
   $template = $template | str replace "___profile_header___" ( $headers.profile | get $data.language )
