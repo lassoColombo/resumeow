@@ -1,7 +1,7 @@
 name: Friedrich Mice
 img: img.png
 color: "304263"
-language: en
+language: english
 profile:
   - Metaphysical programmer and architect of digital chaos.
   - Expert in deconstructing systems and reinventing them according to the will to power.
@@ -49,27 +49,14 @@ work_experiences:
     company: Himself
     dates: 1844 - Present
     description: I write software that questions the very existence of software. My code is a shadow on Plato’s cave.
-    items:
-      - project: ÜberCompiler
-        text: A compiler that only accepts code worthy of existence.
-      - project: WillToPowerOS
-        text: An operating system that only updates if it deems its user strong enough.
   - title: Existential Hacker
     company: Humanity (unrequested)
     dates: Always
     description: I break systems, not to destroy them, but to reveal their true fragile and illusory nature.
-    items:
-      - project: Zarathustra Protocol
-        text: A communication protocol that ignores common syntax and rewards pure intuition.
   - title: Architect of the Eternal Return
     company: The Infinite Loop Initiative
     dates: Indefinite
     description: Designing recursion structures and infinite loops that reflect the true nature of reality and existence.
-    items:
-      - project: RecursiveReality
-        text: A framework for developing software that continuously rebuilds itself through endless iteration.
-      - project: Nietzschean Stack Overflow
-        text: An AI-driven debugging assistant that only answers if the user has demonstrated sufficient will to power.
 education:
   - title: Degree in Philosophy and Programming of Fate
     institution: University of Chaos

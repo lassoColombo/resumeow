@@ -3,60 +3,60 @@ const self_path = path self
 def _headers [] {
   {
     "profile": {
-      "it": "profilo",
-      "eng": "profile",
-      "fr": "profil",
-      "es": "perfil",
-      "de": "profil"
+      "italian": "profilo",
+      "english": "profile",
+      "french": "profil",
+      "spanish": "perfil",
+      "german": "profil"
     },
     "desiderata": {
-      "it": "desiderata",
-      "eng": "wishes",
-      "fr": "souhaits",
-      "es": "deseos",
-      "de": "wünsche"
+      "italian": "desiderata",
+      "english": "wishes",
+      "french": "souhaits",
+      "spanish": "deseos",
+      "german": "wünsche"
     },
     "languages": {
-      "it": "lingue",
-      "eng": "languages",
-      "fr": "langues",
-      "es": "idiomas",
-      "de": "sprachen"
+      "italian": "lingue",
+      "english": "languages",
+      "french": "langues",
+      "spanish": "idiomas",
+      "german": "sprachen"
     },
     "contacts": {
-      "it": "contatti",
-      "eng": "contacts",
-      "fr": "contacts",
-      "es": "contactos",
-      "de": "kontakte"
+      "italian": "contatti",
+      "english": "contacts",
+      "french": "contacts",
+      "spanish": "contactos",
+      "german": "kontakte"
     },
     "key_competences": {
-      "it": "competenze chiave",
-      "eng": "key competences",
-      "fr": "compétences clés",
-      "es": "competencias clave",
-      "de": "schlüsselkompetenzen"
+      "italian": "competenze chiave",
+      "english": "key competences",
+      "french": "compétences clés",
+      "spanish": "competencias clave",
+      "german": "schlüsselkompetenzen"
     },
     "transversal_competences": {
-      "it": "competenze trasversali",
-      "eng": "transversal competences",
-      "fr": "compétences transversales",
-      "es": "competencias transversales",
-      "de": "übergreifende kompetenzen"
+      "italian": "competenze trasversali",
+      "english": "transversal competences",
+      "french": "compétences transversales",
+      "spanish": "competencias transversales",
+      "german": "übergreifende kompetenzen"
     },
     "work_experiences": {
-      "it": "esperienze lavorative",
-      "eng": "work experiences",
-      "fr": "expériences professionnelles",
-      "es": "experiencias laborales",
-      "de": "berufserfahrungen"
+      "italian": "esperienze lavorative",
+      "english": "work experiences",
+      "french": "expériences professionnelles",
+      "spanish": "experiencias laborales",
+      "german": "berufserfahrungen"
     },
     "education": {
-      "it": "istruzione",
-      "eng": "education",
-      "fr": "éducation",
-      "es": "educación",
-      "de": "bildung"
+      "italian": "istruzione",
+      "english": "education",
+      "french": "éducation",
+      "spanish": "educación",
+      "german": "bildung"
     }
   }
 }
@@ -67,10 +67,10 @@ export def main [
   --output(-o): string
 ] {
   let input = $in
-  let s = if $spec != "" {
+  let s = if $spec != "" and $spec != null {
     open -r $spec | from yaml
   } else {
-    $input | from yaml
+    $input
   }
   mut t = open --raw $template
 
@@ -123,9 +123,7 @@ export def main [
   }
   $languages = $languages | str replace -r '$' $"\\end{itemize}"
   $t = $t | str replace "___languages___" $languages
-
   $t = $t | str replace "___mail___" $s.contacts.mail
-
   $t = $t | str replace "___phone___" $s.contacts.phone
 
   if ( $s.contacts.links | is-not-empty ) {
@@ -160,12 +158,7 @@ export def main [
   mut work = ""
   for exp in $s.work_experiences {
     $work = $work | str replace -r '$' $"\\textsc{($exp.title)} \\textit{ - ($exp.company)}.\\\\ \\dates{($exp.dates)}\\vspace{0.5em}\\\\\n"
-    $work = $work | str replace -r '$' $"\t\\hspace*{0.5em}\\begin{minipage}[t]{\\dimexpr\\textwidth-2em\\relax}($exp.description)\\end{minipage}\n"
-    $work = $work | str replace -r '$' $"\\begin{itemize}\n"
-    for item in ($exp.items? | default []) {
-      $work = $work | str replace -r '$' $"\t\\item \\textit{($item.project)}: ($item.text)\n"
-    }
-    $work = $work | str replace -r '$' $"\\end{itemize}\n"
+    $work = $work | str replace -r '$' $"\t\\hspace*{0.5em}\\smaller{\\begin{minipage}[t]{\\dimexpr\\textwidth-2em\\relax}($exp.description)\\end{minipage}}\n\n"
   }
   $t = $t | str replace "___work_experiences___" $work
 
@@ -177,5 +170,9 @@ export def main [
   $edu = $edu | str replace -r '$' $"\\end{itemize}\n"
   $t = $t | str replace "___education___" $edu
 
-  $t 
+  if $output == null {
+    return $t 
+  } else {
+    $t | save -f $output
+  }
 }
