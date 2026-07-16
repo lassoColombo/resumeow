@@ -1,0 +1,12 @@
+# Section headers and inline labels for Italian.
+# Keys are referenced by the template as i18n.<key>. Add a key here when a
+# template adds a section — never touch render.py.
+profile: profilo
+desiderata: desiderata
+languages: lingue
+contacts: contatti
+key_competences: competenze chiave
+transversal_competences: competenze trasversali
+work_experiences: esperienze lavorative
+education: istruzione
+grade_label: "Valutazione:"

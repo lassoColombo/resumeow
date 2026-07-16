@@ -1,0 +1,78 @@
+\#{ resumeow — "modern": single-column minimalist LaTeX. Same data + same render.py as the two-column default.tex; only this file differs. Demonstrates restyling within the same output format with zero driver changes. }
+% !TeX program = pdflatex
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage[margin=18mm]{geometry}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{FiraSans}
+\renewcommand{\familydefault}{\sfdefault}
+
+\definecolor{accent}{HTML}{\VAR{ color }}
+
+\setlist[itemize]{nosep, leftmargin=1.4em, label=\textcolor{accent}{\textbullet}}
+\newcommand{\dates}[1]{\hfill{\small\itshape #1}}
+\newcommand{\cvsection}[1]{%
+  \par\vspace{1.6ex}%
+  {\large\bfseries\color{accent}\MakeUppercase{#1}}\par
+  \vspace{-0.7ex}{\color{accent}\hrule height 0.6pt}\vspace{1.1ex}}
+
+\usepackage[hidelinks]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4ex}
+
+\begin{document}
+\pagestyle{empty}
+
+{\fontsize{26}{30}\selectfont\bfseries \VAR{ name }}\par
+\vspace{0.8ex}
+{\color{accent}\rule{\textwidth}{1pt}}\par
+\vspace{0.6ex}
+{\small \VAR{ contacts.mail }\,\textbullet\,\VAR{ contacts.phone }\BLOCK{ for l in contacts.links or [] }\,\textbullet\,\href{\VAR{ l.link }}{\VAR{ l.display }}\BLOCK{ endfor }}\par
+
+\cvsection{\VAR{ i18n.profile }}
+\BLOCK{ if profile is string }\VAR{ profile }\BLOCK{ else }\VAR{ profile | join(' ') }\BLOCK{ endif }
+
+\cvsection{\VAR{ i18n.desiderata }}
+\BLOCK{ if desiderata is string }\VAR{ desiderata }\BLOCK{ else }\VAR{ desiderata | join(' ') }\BLOCK{ endif }
+
+\cvsection{\VAR{ i18n.languages }}
+\VAR{ languages | join(' \\textbullet\\ ') }
+
+\cvsection{\VAR{ i18n.key_competences }}
+\BLOCK{ for c in key_competences }
+\textbf{\VAR{ c.name }.} \VAR{ c.text }\par\smallskip
+\BLOCK{ endfor }
+\BLOCK{ if transversal_competences }
+\cvsection{\VAR{ i18n.transversal_competences }}
+\BLOCK{ for c in transversal_competences }
+\textbf{\VAR{ c.name }.} \VAR{ c.text }\par\smallskip
+\BLOCK{ endfor }
+\BLOCK{ endif }
+\cvsection{\VAR{ i18n.work_experiences }}
+\BLOCK{ for e in work_experiences }
+{\bfseries \VAR{ e.title }} — \VAR{ e.company }\dates{\VAR{ e.dates }}\par
+\VAR{ e.description }
+\BLOCK{ if 'items' in e }
+\begin{itemize}
+\BLOCK{ for it in e['items'] }
+\item \textbf{\VAR{ it.project }:} \VAR{ it.text }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+\smallskip
+
+\BLOCK{ endfor }
+\cvsection{\VAR{ i18n.education }}
+\begin{itemize}
+\BLOCK{ for ed in education }
+\item \textbf{\VAR{ ed.title }} — \VAR{ ed.institution }\dates{\VAR{ i18n.grade_label } \VAR{ ed.grade }}
+\BLOCK{ endfor }
+\end{itemize}
+
+\end{document}

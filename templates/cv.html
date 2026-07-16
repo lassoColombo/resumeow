@@ -1,0 +1,85 @@
+\#{ resumeow — self-contained HTML CV. Same data + render.py; a completely different medium. LaTeX-isms in the data are cleaned via tx(); HTML escaping via the built-in `escape` filter. The driver knows none of this. }
+\BLOCK{ macro tx(s) }\VAR{ s | string | replace('\\,', ' ') | replace('\\&', '&') | replace('\\_', '_') | replace('\\%', '%') }\BLOCK{ endmacro }
+<!DOCTYPE html>
+<html lang="\VAR{ language }">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>\VAR{ name | escape } — CV</title>
+<style>
+  :root { --accent: #\VAR{ color }; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         color: #1c2230; max-width: 820px; margin: 2rem auto; padding: 0 1.2rem; line-height: 1.5; }
+  a { color: var(--accent); text-decoration: none; }
+  header { border-bottom: 4px solid var(--accent); padding-bottom: .6rem; margin-bottom: 1.2rem; }
+  h1 { font-size: 2.2rem; margin: 0; color: var(--accent); }
+  .contact { color: #5a6172; font-size: .92rem; margin-top: .35rem; }
+  h2 { color: var(--accent); font-size: 1.02rem; text-transform: uppercase; letter-spacing: .06em;
+       border-bottom: 1px solid #e3e6ee; padding-bottom: .2rem; margin: 1.6rem 0 .7rem; }
+  .comp { margin: .5rem 0; }
+  .comp b { color: #11151f; }
+  .entry { margin: .85rem 0; }
+  .entry .row { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+  .entry .role { font-weight: 600; }
+  .entry .dates { color: #8a90a2; font-size: .85rem; white-space: nowrap; }
+  ul { margin: .35rem 0 .35rem 1.1rem; padding: 0; }
+  .langs { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+  .langs li { background: #eef1f8; border-radius: 999px; padding: .15rem .7rem; font-size: .85rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>\VAR{ name | escape }</h1>
+  <div class="contact">
+    <a href="mailto:\VAR{ tx(contacts.mail) | escape }">\VAR{ tx(contacts.mail) | escape }</a>
+    &middot; \VAR{ tx(contacts.phone) | escape }\BLOCK{ for l in contacts.links or [] }
+    &middot; <a href="\VAR{ l.link | escape }">\VAR{ l.display | escape }</a>\BLOCK{ endfor }
+  </div>
+</header>
+
+<section>
+  <h2>\VAR{ i18n.profile | escape }</h2>
+  <p>\BLOCK{ if profile is string }\VAR{ tx(profile) | escape }\BLOCK{ else }\VAR{ tx(profile | join(' ')) | escape }\BLOCK{ endif }</p>
+</section>
+
+<section>
+  <h2>\VAR{ i18n.desiderata | escape }</h2>
+  \BLOCK{ if desiderata is string }<p>\VAR{ tx(desiderata) | escape }</p>\BLOCK{ else }<ul>
+    \BLOCK{ for item in desiderata }<li>\VAR{ tx(item) | escape }</li>
+    \BLOCK{ endfor }</ul>\BLOCK{ endif }
+</section>
+
+<section>
+  <h2>\VAR{ i18n.languages | escape }</h2>
+  <ul class="langs">\BLOCK{ for lang in languages }<li>\VAR{ tx(lang) | escape }</li>\BLOCK{ endfor }</ul>
+</section>
+
+<section>
+  <h2>\VAR{ i18n.key_competences | escape }</h2>
+  \BLOCK{ for c in key_competences }<div class="comp"><b>\VAR{ c.name | escape }.</b> \VAR{ tx(c.text) | escape }</div>
+  \BLOCK{ endfor }
+</section>
+\BLOCK{ if transversal_competences }
+<section>
+  <h2>\VAR{ i18n.transversal_competences | escape }</h2>
+  \BLOCK{ for c in transversal_competences }<div class="comp"><b>\VAR{ c.name | escape }.</b> \VAR{ tx(c.text) | escape }</div>
+  \BLOCK{ endfor }
+</section>
+\BLOCK{ endif }
+<section>
+  <h2>\VAR{ i18n.work_experiences | escape }</h2>
+  \BLOCK{ for job in work_experiences }<div class="entry">
+    <div class="row"><span class="role">\VAR{ job.title | escape } — \VAR{ job.company | escape }</span><span class="dates">\VAR{ job.dates | escape }</span></div>
+    <p>\VAR{ tx(job.description | trim) | escape }</p>\BLOCK{ if 'items' in job }
+    <ul>\BLOCK{ for it in job['items'] }<li><b>\VAR{ it.project | escape }:</b> \VAR{ tx(it.text) | escape }</li>\BLOCK{ endfor }</ul>\BLOCK{ endif }
+  </div>
+  \BLOCK{ endfor }
+</section>
+
+<section>
+  <h2>\VAR{ i18n.education | escape }</h2>
+  <ul>\BLOCK{ for ed in education }<li><b>\VAR{ ed.title | escape }</b> — \VAR{ ed.institution | escape } (\VAR{ ed.grade | escape })</li>\BLOCK{ endfor }</ul>
+</section>
+</body>
+</html>

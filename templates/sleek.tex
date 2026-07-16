@@ -1,0 +1,151 @@
+\#{ resumeow — "sleek": refined two-column sidebar layout. Same data + same render.py as default.tex; only this file differs. Reuses default.tex's proven two-block pagination (sidebar+competences, then strip+experiences) so content flows across pages without overflow; restyles headers, competence titles, dividers and tool chips. }
+% !TeX program = pdflatex
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage[left = 0mm, right = 0mm, top = 0mm, bottom = 0mm]{geometry}
+\usepackage[stretch = 25, shrink = 25, tracking = true, letterspace = 40]{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{marvosym}
+\usepackage{enumitem}
+\setlist{parsep = 0pt, topsep = 0pt, partopsep = 1pt, itemsep = 1pt, leftmargin = 5mm}
+
+\usepackage{FiraSans}
+\renewcommand{\familydefault}{\sfdefault}
+
+\definecolor{accent}{HTML}{\VAR{ color }}
+\definecolor{sidebar}{HTML}{\VAR{ color }}
+\definecolor{toolbg}{HTML}{EEF0F4}
+
+% Inline "tool chip" -- the LaTeX equivalent of a markdown `backtick` span.
+% Used directly in the YAML data, e.g. \tool{GitLab CI}.
+\newcommand{\tool}[1]{{\setlength{\fboxsep}{2pt}\colorbox{toolbg}{\footnotesize\ttfamily\textcolor{accent}{#1}}}}
+
+\newcommand{\dates}[1]{\hfill\mbox{\small\itshape #1}}
+\newcommand{\smaller}[1]{{\footnotesize #1}}
+\newcommand{\evensmaller}[1]{{\scriptsize #1}}
+% Sidebar header: white small caps + faint rule.
+\newcommand{\headleft}[1]{\vspace*{2.2ex}{\footnotesize\bfseries\scshape\textls[50]{#1}}\par%
+    \vspace*{-1.2ex}{\color{white!55!sidebar}\hrulefill}\par\vspace*{0.8ex}}
+% Main header: accent small caps + short accent underline.
+\newcommand{\headright}[1]{\vspace*{2.6ex}{\Large\bfseries\scshape\color{accent}\textls[50]{#1}}\par%
+    \vspace*{0.1ex}{\color{accent}\rule{3.2em}{1.2pt}}\par\vspace*{1.0ex}}
+% A key/transversal competence: bold accent title, body underneath.
+\newcommand{\competence}[2]{{\bfseries\color{accent}#1}\par\vspace{0.3em}#2\par\vspace{0.7em}}
+
+\usepackage[colorlinks = true, urlcolor = white, linkcolor = accent]{hyperref}
+
+\begin{document}
+\setlength{\topskip}{0pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\fboxsep}{0pt}
+\pagestyle{empty}
+\raggedbottom
+
+%%%%%%%%%%%%%% BLOCK 1: sidebar + key competences (page 1) %%%%%%%%%%%%%%%%%%%
+\begin{minipage}[t]{0.33\textwidth}
+\colorbox{sidebar}{\begin{minipage}[t][5mm][t]{\textwidth}\null\hfill\null\end{minipage}}
+
+\vspace{-.2ex}
+\colorbox{sidebar}{\color{white}%
+\kern0.09\textwidth\relax
+\begin{minipage}[t][293mm][t]{0.82\textwidth}
+\raggedright
+\vspace*{1.5ex}
+\null\hfill\includegraphics[width=0.62\textwidth]{\VAR{ img }}\hfill\null
+\vspace*{1.5ex}
+\begin{center}{\Large\bfseries\textls[30]{\VAR{ name }}}\end{center}
+
+\headleft{\VAR{ i18n.profile }}
+\BLOCK{ if profile is string }
+\smaller{\VAR{ profile }}
+\BLOCK{ else }
+\begin{itemize}
+\BLOCK{ for item in profile }
+\item \smaller{\VAR{ item }}
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+
+\headleft{\VAR{ i18n.desiderata }}
+\BLOCK{ if desiderata is string }
+\smaller{\VAR{ desiderata }}
+\BLOCK{ else }
+\begin{itemize}
+\BLOCK{ for item in desiderata }
+\item \smaller{\VAR{ item }}
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+
+\headleft{\VAR{ i18n.languages }}
+\begin{itemize}
+\BLOCK{ for lang in languages }
+\item \smaller{\VAR{ lang }}
+\BLOCK{ endfor }
+\end{itemize}
+
+\headleft{\VAR{ i18n.contacts }}
+\smaller{%
+\MVAt\ \VAR{ contacts.mail } \\[0.5ex]
+\Mobilefone\ \VAR{ contacts.phone }
+\BLOCK{ for link in contacts.links or [] }
+\\[0.5ex]\Mundus\ \href{\VAR{ link.link }}{\VAR{ link.display }}
+\BLOCK{ endfor }
+}
+\end{minipage}%
+\kern0.09\textwidth\relax}
+\end{minipage}%
+\hskip2.2em
+\begin{minipage}[t]{0.56\textwidth}
+\setlength{\parskip}{0pt}
+\vspace{2ex}
+\headright{\VAR{ i18n.key_competences }}
+\BLOCK{ for c in key_competences }
+\competence{\VAR{ c.name }}{\smaller{\VAR{ c.text }}}
+\BLOCK{ endfor }
+\end{minipage}
+
+%%%%%%%%%%%%%% BLOCK 2: thin accent strip + experiences (page 2) %%%%%%%%%%%%%
+\begin{minipage}[t]{0.1\textwidth}
+\colorbox{sidebar}{\begin{minipage}[t][300mm][t]{\textwidth}\null\hfill\null\end{minipage}}
+\end{minipage}%
+\hskip2.2em
+\begin{minipage}[t]{0.782\textwidth}
+\setlength{\parskip}{0pt}
+\vspace{2ex}
+
+\BLOCK{ if transversal_competences }
+\headright{\VAR{ i18n.transversal_competences }}
+\BLOCK{ for c in transversal_competences }
+\competence{\VAR{ c.name }}{\evensmaller{\VAR{ c.text }}}
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\headright{\VAR{ i18n.work_experiences }}
+\BLOCK{ for e in work_experiences }
+{\bfseries \VAR{ e.title }}\ \textit{— \VAR{ e.company }}\dates{\VAR{ e.dates }}\par\vspace{0.3em}
+\evensmaller{\VAR{ e.description }}
+\BLOCK{ if 'items' in e }
+\begin{itemize}
+\BLOCK{ for it in e['items'] }
+\item \evensmaller{\textbf{\VAR{ it.project }:} \VAR{ it.text }}
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+\par\vspace{0.5em}{\color{accent!25}\hrulefill}\par\vspace{0.5em}
+\BLOCK{ endfor }
+
+\headright{\VAR{ i18n.education }}
+\begin{itemize}
+\BLOCK{ for ed in education }
+\item {\bfseries \VAR{ ed.title }}\ \textit{— \VAR{ ed.institution }}\dates{\VAR{ i18n.grade_label } \VAR{ ed.grade }}
+\BLOCK{ endfor }
+\end{itemize}
+
+\end{minipage}
+\end{document}

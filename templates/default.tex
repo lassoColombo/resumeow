@@ -1,50 +1,34 @@
-% !TeX spellcheck = en_GB
+\#{ resumeow Jinja2-LaTeX template (LuxSleek-CV layout). Delimiters: VAR for values, BLOCK for logic, hash-brace for comments. All presentation lives here; render.py is CV-agnostic. Add/reorder/restyle sections freely without touching the script. }
 % !TeX program = pdflatex
-%
-% LuxSleek-CV 1.1 LaTeX template
-% Author: Andreï V. Kostyrka, University of Luxembourg
-%
-% 1.1: added tracking and letter-spacing for prettier lower caps, added `~` for language levels
-% 1.0: initial release
-%
-% This template fills the gap in the available variety of templates
-% by proposing something that is not a custom class, not using any
-% hard-coded settings deeply hidden in style files, and provides
-% a handful of custom command definitions that are as transparent as it gets.
-% Developed at the University of Luxembourg.
-%
-% *NOTHING IS HARCODED, and never should be.*
-%
-% Target audience: applicants in the IT industry, or business in general
-%
-% The main strength of this template is, it explicitly showcases how
-% to break the flow of text to achieve the most flexible right alignment
-% of dates for multiple configurations.
+\documentclass[11pt, a4paper]{article}
 
-\documentclass[11pt, a4paper]{article} 
-
-\usepackage[T1]{fontenc}     % We are using pdfLaTeX,
-\usepackage[utf8]{inputenc}  % hence this preparation
-\usepackage[british]{babel}  
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
 \usepackage[left = 0mm, right = 0mm, top = 0mm, bottom = 0mm]{geometry}
-\usepackage[stretch = 25, shrink = 25, tracking=true, letterspace=30]{microtype}  
-\usepackage{graphicx}        % To insert pictures
-\usepackage{xcolor}          % To add colour to the document
-\usepackage{marvosym}        % Provides icons for the contact details
+\usepackage[stretch = 25, shrink = 25, tracking=true, letterspace=30]{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{marvosym}
 
-\usepackage{enumitem}        % To redefine spacing in lists
+\usepackage{enumitem}
 \setlist{parsep = 0pt, topsep = 0pt, partopsep = 1pt, itemsep = 1pt, leftmargin = 6mm}
 
-\usepackage{FiraSans}        % Change this to use any font, but keep it simple
+\usepackage{FiraSans}
 \renewcommand{\familydefault}{\sfdefault}
 
-\definecolor{cvblue}{HTML}{___color___}
+\definecolor{cvblue}{HTML}{\VAR{ color }}
+\definecolor{toolbg}{HTML}{EEF0F4}
+
+% Inline "tool chip" -- the LaTeX equivalent of a markdown `backtick` span.
+% Used directly in the YAML data, e.g. \tool{GitLab CI}.
+\newcommand{\tool}[1]{{\setlength{\fboxsep}{2pt}\colorbox{toolbg}{\footnotesize\ttfamily #1}}}
 
 %%%%%%% USER COMMAND DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%
-% These are the real workhorses of this template
-\newcommand{\dates}[1]{\hfill\mbox{#1}} % Bold stuff that doesn’t got broken into lines
-\newcommand{\is}{\par\vskip.5ex plus .4ex} % Item spacing
+\newcommand{\dates}[1]{\hfill\mbox{#1}}
+\newcommand{\is}{\par\vskip.5ex plus .4ex}
 \newcommand{\smaller}[1]{{\footnotesize #1}}
+\newcommand{\evensmaller}[1]{{\scriptsize #1}}
 \newcommand{\headleft}[1]{\vspace*{2ex}\footnotesize\textsc{\textbf{\textbf{#1}}}\par%
     \vspace*{-1.5ex}\hrulefill\par\vspace*{0.7ex}}
 \newcommand{\headright}[1]{\vspace*{2.5ex}\scriptsize\textsc{\Large\color{cvblue}#1}\par%
@@ -64,7 +48,6 @@
 \raggedbottom
 
 \begin{minipage}[t]{0.33\textwidth} %% Left column -- outer definition
-%  Left column -- top dark rectangle
 \colorbox{cvblue}{\begin{minipage}[t][5mm][t]{\textwidth}\null\hfill\null\end{minipage}}
 
 \vspace{-.2ex} % Eliminates the small gap
@@ -74,29 +57,50 @@
 \raggedright
 \vspace*{2.0ex}
 \begin{center}
-  \Large ___name___
+  \Large \VAR{ name }
 \end{center}
-\normalsize 
+\normalsize
 
-% Centering without extra vertical spacing
-\null\hfill\includegraphics[width=0.7\textwidth]{___img___}\hfill\null
+\null\hfill\includegraphics[width=0.7\textwidth]{\VAR{ img }}\hfill\null
 
 \vspace*{0.1ex} % Extra space after the picture
 
-\headleft{___profile_header___}
-___profile___
+\headleft{\VAR{ i18n.profile }}
+\BLOCK{ if profile is string }
+\VAR{ profile }
+\BLOCK{ else }
+\begin{itemize}
+\BLOCK{ for item in profile }
+\item \VAR{ item }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
 
-\headleft{___desiderata_header___}
-___desiderata___
+\headleft{\VAR{ i18n.desiderata }}
+\BLOCK{ if desiderata is string }
+\VAR{ desiderata }
+\BLOCK{ else }
+\begin{itemize}
+\BLOCK{ for item in desiderata }
+\item \VAR{ item }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
 
-\headleft{___languages_header___}
-___languages___
+\headleft{\VAR{ i18n.languages }}
+\begin{itemize}
+\BLOCK{ for lang in languages }
+\item \VAR{ lang }
+\BLOCK{ endfor }
+\end{itemize}
 
-\headleft{___contacts_header___}
+\headleft{\VAR{ i18n.contacts }}
 \small % To fit more content
-\MVAt\ {\small ___mail___} \\[0.4ex]
-\Mobilefone\ ___phone___ \\[0.4ex]
-___links___
+\MVAt\ {\small \VAR{ contacts.mail }} \\[0.4ex]
+\Mobilefone\ \VAR{ contacts.phone } \\[0.4ex]
+\BLOCK{ for link in contacts.links or [] }
+\Mundus\ \href{\VAR{ link.link }}{\VAR{ link.display }} \\[0.4ex]
+\BLOCK{ endfor }
 \normalsize
 
 
@@ -110,17 +114,17 @@ ___links___
 
 \vspace{2ex}
 
-\headright{___key_competences_header___}
-___key_competences___
+\headright{\VAR{ i18n.key_competences }}
+\BLOCK{ for c in key_competences }
+\textsc{\VAR{ c.name }}\\
+\vspace{0.75em}
+\hspace*{2em}\smaller{\begin{minipage}[t]{\dimexpr\textwidth-2em\relax}\VAR{ c.text }\end{minipage}}
 
-\headright{___transversal_competences_header___}
-___transversal_competences___
-
+\BLOCK{ endfor }
 \end{minipage}
 
 %codice per fascia laterale piccola blu
 \begin{minipage}[t]{0.1\textwidth} %% Left column -- outer definition
-%  Left column -- top dark rectangle
 \colorbox{cvblue}{\color{white}  %% LEFT BOX
 \kern0.09\textwidth\relax\begin{minipage}[t][300mm][t]{\textwidth}\null\hfill\null\end{minipage}}
 \vspace{-0.2ex} % Eliminates the small gap
@@ -134,11 +138,36 @@ ___transversal_competences___
 \setlength{\parskip}{0.8ex}% Adds spaces between paragraphs; use \\ to add new lines without this space. Shrink this amount to fit more data vertically
 \vspace{2ex}
 
-\headright{___work_experiences_header___}
-___work_experiences___
+\BLOCK{ if transversal_competences }
+\headright{\VAR{ i18n.transversal_competences }}
+\BLOCK{ for c in transversal_competences }
+\textsc{\VAR{ c.name }}\\
+\vspace{0.75em}
+\hspace*{2em}\evensmaller{\begin{minipage}[t]{\dimexpr\textwidth-2em\relax}\VAR{ c.text }\end{minipage}}
 
-\headright{___education_header___}
-___education___
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\headright{\VAR{ i18n.work_experiences }}
+\BLOCK{ for e in work_experiences }
+\textsc{\VAR{ e.title }} \textit{ - \VAR{ e.company }}.\\ \dates{\VAR{ e.dates }}\vspace{0.5em}\\
+\hspace*{0.5em}\evensmaller{\begin{minipage}[t]{\dimexpr\textwidth-2em\relax}\VAR{ e.description }\end{minipage}}
+\BLOCK{ if 'items' in e }
+\begin{itemize}
+\BLOCK{ for it in e['items'] }
+\item \textbf{\VAR{ it.project }:} \VAR{ it.text }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+
+\BLOCK{ endfor }
+
+\headright{\VAR{ i18n.education }}
+\begin{itemize}
+\BLOCK{ for ed in education }
+\item \textsc{\VAR{ ed.title }} \textit{ - \VAR{ ed.institution }}\\ \dates{\VAR{ i18n.grade_label } \VAR{ ed.grade }}
+\BLOCK{ endfor }
+\end{itemize}
 
 \end{minipage}
 \end{document}
