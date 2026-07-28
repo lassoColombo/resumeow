@@ -1,4 +1,4 @@
-\#{ resumeow — "sleek": refined two-column sidebar layout. Same data + same render.py as default.tex; only this file differs. Reuses default.tex's proven two-block pagination (sidebar+competences, then strip+experiences) so content flows across pages without overflow; restyles headers, competence titles, dividers and tool chips. }
+\#{ resumeow — "sleek-rosepine": the sleek-dark two-column sidebar layout recoloured to the user's "Rosé Pine Ember" base24 scheme (~/.config/tinted-theming/rosepine.yaml). Warm rose-cream foreground on the authentic cool plum base; gold is the protagonist accent, iris carries the code chips. Unlike sleek-dark this does NOT derive its palette from the YAML `color` — Rosé Pine needs a full palette, so the slots are hardcoded and `color` is ignored. Same data + same render.py. }
 % !TeX program = pdflatex
 \documentclass[11pt, a4paper]{article}
 
@@ -9,6 +9,7 @@
 \usepackage[stretch = 25, shrink = 25, tracking = true, letterspace = 40]{microtype}
 \usepackage{graphicx}
 \usepackage{xcolor}
+\usepackage{pagecolor}   % fills the whole page background (dark theme)
 \usepackage{marvosym}
 \usepackage{enumitem}
 \setlist{parsep = 0pt, topsep = 0pt, partopsep = 1pt, itemsep = 1pt, leftmargin = 5mm}
@@ -16,27 +17,38 @@
 \usepackage{FiraSans}
 \renewcommand{\familydefault}{\sfdefault}
 
-\definecolor{accent}{HTML}{\VAR{ color }}
-\definecolor{sidebar}{HTML}{\VAR{ color }}
-\definecolor{toolbg}{HTML}{EEF0F4}
+% ---- Rosé Pine Ember palette (hardcoded; the YAML `color` is ignored) ----------
+% Source of truth: ~/.config/tinted-theming/rosepine.yaml (base24 "Rosé Pine Ember").
+% Slot roles mirror the Starry Cat conceptualization: base0A gold = protagonist
+% accent, base0D iris = code/structural, base05 = warm foreground.
+\definecolor{page}{HTML}{100e1a}     % base11 deep plum-black — page canvas
+\definecolor{sidebar}{HTML}{191724}  % base00 RP Base — raised sidebar / strip panel
+\definecolor{elevated}{HTML}{403d52} % base02 RP Highlight Med — chip / raised surface
+\definecolor{line}{HTML}{6e6a86}     % base03 RP Muted — subtle dividers, separators
+\definecolor{ink}{HTML}{e6dad7}      % base05 rose cream — primary foreground
+\definecolor{mute}{HTML}{908caa}     % base04 RP Subtle — dim text (unused hook)
+\definecolor{rose}{HTML}{ea9a97}     % base09 RP Rose/coral (reference)
+\colorlet{accent}{rose!66!page}      % deepened dusty rose — titles/rules, less bright (no yellow)
+\definecolor{code}{HTML}{9ccfd8}     % base0C RP Foam — tool chips (code / structural), cool counterpoint
+\colorlet{toolbg}{elevated}
 
 % Inline "tool chip" -- the LaTeX equivalent of a markdown `backtick` span.
-% Used directly in the YAML data, e.g. \tool{GitLab CI}.
-\newcommand{\tool}[1]{{\setlength{\fboxsep}{2pt}\colorbox{toolbg}{\footnotesize\ttfamily\textcolor{accent}{#1}}}}
+% Used directly in the YAML data, e.g. \tool{GitLab CI}. Iris text = code identifier.
+\newcommand{\tool}[1]{{\setlength{\fboxsep}{2pt}\colorbox{toolbg}{\footnotesize\ttfamily\textcolor{code}{#1}}}}
 
 \newcommand{\dates}[1]{\hfill\mbox{\small\itshape #1}}
 \newcommand{\smaller}[1]{{\footnotesize #1}}
 \newcommand{\evensmaller}[1]{{\scriptsize #1}}
-% Sidebar header: white small caps + faint rule.
+% Sidebar header: cream small caps + faint muted rule.
 \newcommand{\headleft}[1]{\vspace*{2.2ex}{\footnotesize\bfseries\scshape\textls[50]{#1}}\par%
-    \vspace*{-1.2ex}{\color{white!55!sidebar}\hrulefill}\par\vspace*{0.8ex}}
-% Main header: accent small caps + short accent underline.
+    \vspace*{-1.2ex}{\color{line}\hrulefill}\par\vspace*{0.8ex}}
+% Main header: gold small caps + short gold underline.
 \newcommand{\headright}[1]{\vspace*{2.6ex}{\Large\bfseries\scshape\color{accent}\textls[50]{#1}}\par%
     \vspace*{0.1ex}{\color{accent}\rule{3.2em}{1.2pt}}\par\vspace*{1.0ex}}
-% A key/transversal competence: bold accent title, body underneath.
+% A key/transversal competence: bold gold title, body underneath.
 \newcommand{\competence}[2]{{\bfseries\color{accent}#1}\par\vspace{0.3em}#2\par\vspace{0.7em}}
 
-\usepackage[colorlinks = true, urlcolor = white, linkcolor = accent]{hyperref}
+\usepackage[colorlinks = true, urlcolor = ink, linkcolor = accent]{hyperref}
 
 \begin{document}
 \setlength{\topskip}{0pt}
@@ -45,13 +57,15 @@
 \setlength{\fboxsep}{0pt}
 \pagestyle{empty}
 \raggedbottom
+\pagecolor{page}   % dark page background
+\color{ink}        % warm cream default text (sidebar overrides locally)
 
 %%%%%%%%%%%%%% BLOCK 1: sidebar + key competences (page 1) %%%%%%%%%%%%%%%%%%%
 \begin{minipage}[t]{0.33\textwidth}
 \colorbox{sidebar}{\begin{minipage}[t][5mm][t]{\textwidth}\null\hfill\null\end{minipage}}
 
 \vspace{-.2ex}
-\colorbox{sidebar}{\color{white}%
+\colorbox{sidebar}{\color{ink}%
 \kern0.09\textwidth\relax
 \begin{minipage}[t][293mm][t]{0.82\textwidth}
 \raggedright
@@ -110,7 +124,7 @@
 \BLOCK{ endfor }
 \end{minipage}
 
-%%%%%%%%%%%%%% BLOCK 2: thin accent strip + experiences (page 2) %%%%%%%%%%%%%
+%%%%%%%%%%%%%% BLOCK 2: thin panel strip + experiences (page 2) %%%%%%%%%%%%%
 \begin{minipage}[t]{0.1\textwidth}
 \colorbox{sidebar}{\begin{minipage}[t][300mm][t]{\textwidth}\null\hfill\null\end{minipage}}
 \end{minipage}%
@@ -137,7 +151,7 @@
 \BLOCK{ endfor }
 \end{itemize}
 \BLOCK{ endif }
-\par\vspace{0.5em}{\color{accent!25}\hrulefill}\par\vspace{0.5em}
+\par\vspace{0.5em}{\color{line}\hrulefill}\par\vspace{0.5em}
 \BLOCK{ endfor }
 
 \headright{\VAR{ i18n.education }}

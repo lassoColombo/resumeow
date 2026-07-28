@@ -9,6 +9,7 @@
 \usepackage[stretch = 25, shrink = 25, tracking = true, letterspace = 40]{microtype}
 \usepackage{graphicx}
 \usepackage{xcolor}
+\usepackage{pagecolor}   % fills the whole page background (dark theme)
 \usepackage{marvosym}
 \usepackage{enumitem}
 \setlist{parsep = 0pt, topsep = 0pt, partopsep = 1pt, itemsep = 1pt, leftmargin = 5mm}
@@ -16,9 +17,17 @@
 \usepackage{FiraSans}
 \renewcommand{\familydefault}{\sfdefault}
 
-\definecolor{accent}{HTML}{\VAR{ color }}
-\definecolor{sidebar}{HTML}{\VAR{ color }}
-\definecolor{toolbg}{HTML}{EEF0F4}
+% ---- Dark theme palette -------------------------------------------------
+% Everything is anchored to the data-driven base colour (the YAML `color`);
+% \accent is the single fixed "pop" colour -- change that one line to re-tint.
+\definecolor{basecol}{HTML}{\VAR{ color }}   % base tone from the YAML `color`
+\colorlet{page}{basecol!75!black}            % page background (darker than the panel)
+\colorlet{sidebar}{basecol}                  % raised sidebar / strip panel
+\colorlet{elevated}{basecol!85!white}        % chips / raised surfaces
+\colorlet{line}{basecol!55!white}            % subtle dividers
+\definecolor{ink}{HTML}{E7E9F0}              % primary light text
+\definecolor{accent}{HTML}{7AA2F7}           % <-- accent / highlights (tweak me)
+\colorlet{toolbg}{elevated}
 
 % Inline "tool chip" -- the LaTeX equivalent of a markdown `backtick` span.
 % Used directly in the YAML data, e.g. \tool{GitLab CI}.
@@ -29,14 +38,14 @@
 \newcommand{\evensmaller}[1]{{\scriptsize #1}}
 % Sidebar header: white small caps + faint rule.
 \newcommand{\headleft}[1]{\vspace*{2.2ex}{\footnotesize\bfseries\scshape\textls[50]{#1}}\par%
-    \vspace*{-1.2ex}{\color{white!55!sidebar}\hrulefill}\par\vspace*{0.8ex}}
+    \vspace*{-1.2ex}{\color{ink!45!sidebar}\hrulefill}\par\vspace*{0.8ex}}
 % Main header: accent small caps + short accent underline.
 \newcommand{\headright}[1]{\vspace*{2.6ex}{\Large\bfseries\scshape\color{accent}\textls[50]{#1}}\par%
     \vspace*{0.1ex}{\color{accent}\rule{3.2em}{1.2pt}}\par\vspace*{1.0ex}}
 % A key/transversal competence: bold accent title, body underneath.
 \newcommand{\competence}[2]{{\bfseries\color{accent}#1}\par\vspace{0.3em}#2\par\vspace{0.7em}}
 
-\usepackage[colorlinks = true, urlcolor = white, linkcolor = accent]{hyperref}
+\usepackage[colorlinks = true, urlcolor = ink, linkcolor = accent]{hyperref}
 
 \begin{document}
 \setlength{\topskip}{0pt}
@@ -45,13 +54,15 @@
 \setlength{\fboxsep}{0pt}
 \pagestyle{empty}
 \raggedbottom
+\pagecolor{page}   % dark page background
+\color{ink}        % light default text (sidebar overrides locally)
 
 %%%%%%%%%%%%%% BLOCK 1: sidebar + key competences (page 1) %%%%%%%%%%%%%%%%%%%
 \begin{minipage}[t]{0.33\textwidth}
 \colorbox{sidebar}{\begin{minipage}[t][5mm][t]{\textwidth}\null\hfill\null\end{minipage}}
 
 \vspace{-.2ex}
-\colorbox{sidebar}{\color{white}%
+\colorbox{sidebar}{\color{ink}%
 \kern0.09\textwidth\relax
 \begin{minipage}[t][293mm][t]{0.82\textwidth}
 \raggedright
@@ -137,7 +148,7 @@
 \BLOCK{ endfor }
 \end{itemize}
 \BLOCK{ endif }
-\par\vspace{0.5em}{\color{accent!25}\hrulefill}\par\vspace{0.5em}
+\par\vspace{0.5em}{\color{line}\hrulefill}\par\vspace{0.5em}
 \BLOCK{ endfor }
 
 \headright{\VAR{ i18n.education }}

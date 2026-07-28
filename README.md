@@ -74,10 +74,23 @@ and `render.py` is never touched.
 
 | Template | Output | Notes |
 | --- | --- | --- |
-| `templates/default.tex` | LaTeX (PDF) | Two-column LuxSleek layout. |
+| `templates/default.tex` | LaTeX (PDF) | Two-column LuxSleek layout; filled accent sidebar. |
+| `templates/sleek.tex` | LaTeX (PDF) | Refined two-column sidebar; accent small-caps headers. |
+| `templates/sleek-dark.tex` | LaTeX (PDF) | Dark theme; full-page background tinted from `color`. |
+| `templates/sleek-rosepine.tex` | LaTeX (PDF) | sleek-dark recoloured to the Rosé Pine Ember palette (hardcoded; ignores `color`). |
 | `templates/modern.tex` | LaTeX (PDF) | Single-column minimalist; accent rules. |
+| `templates/swiss.tex` | LaTeX (PDF) | Minimal; grayscale, section labels in a left gutter. |
+| `templates/editorial.tex` | LaTeX (PDF) | Minimal; centered, circular photo, lots of whitespace. |
+| `templates/hairline.tex` | LaTeX (PDF) | Minimal; light two-column split by a hairline (`paracol`). |
+| `templates/ats.tex` | LaTeX (PDF) | ATS-safe & convention-following: single column, experience-first, no photo/colour, keywords stay extractable. |
 | `templates/cv.md` | Markdown | Portable; good for GitHub / plain text. |
 | `templates/cv.html` | HTML | Self-contained styled page; open in a browser. |
+
+The three minimal templates (`swiss`, `editorial`, `hairline`) use **one photo
+and no accent hue** — the YAML `color` is reused only as a near-black ink for
+titles and rules, so leaving it dark keeps them grayscale while a vivid `color`
+still tints them. `editorial` needs `tikz`; `hairline` needs `paracol` (both in
+a standard TeX Live).
 
 ```bash
 # same data, different artifacts — only -t changes

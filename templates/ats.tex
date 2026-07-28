@@ -1,0 +1,102 @@
+\#{ resumeow — "ats": a deliberately convention-following, ATS-safe CV. Unlike the design-forward templates, this one optimises for machine parseability and the reverse-chronological standard: SINGLE column (no sidebars/gutters), experience placed FIRST after the summary, no photo, no colour, real uppercase section headers (no small-caps/letter-spacing that garble copy-paste), and tech-token tool spans rendered as plain extractable text so keywords survive parsing. Same data + same render.py as the others; the img and color fields are intentionally ignored. }
+% !TeX program = pdflatex
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage[left=18mm, right=18mm, top=16mm, bottom=16mm]{geometry}
+\usepackage{microtype}
+\usepackage{enumitem}
+
+\usepackage{FiraSans}
+\renewcommand{\familydefault}{\sfdefault}
+
+% ATS-safe: tech tokens are plain text (no colour box), so keyword parsing works.
+% `img` and `color` from the data are deliberately unused here.
+\newcommand{\tool}[1]{#1}
+\newcommand{\dates}[1]{\hfill{\normalfont #1}}
+
+% Standard section header: real uppercase letters (extract cleanly) + a plain rule.
+\newcommand{\cvsection}[1]{%
+  \par\vspace{1.8ex}%
+  {\large\bfseries\MakeUppercase{#1}}\par
+  \vspace{-0.4ex}\hrule height 0.6pt\vspace{1.1ex}}
+
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5ex}
+\setlist[itemize]{nosep, leftmargin=1.4em, label=\textbullet}
+
+\begin{document}
+\pagestyle{empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% HEADER: name + contact line %%%%%%%%%%%%%%%%%%%%%%%%%
+{\LARGE\bfseries \VAR{ name }}\par
+\vspace{0.8ex}
+{\small \VAR{ contacts.mail }\ \textbar\ \VAR{ contacts.phone }%
+\BLOCK{ for l in contacts.links or [] }\ \textbar\ \href{\VAR{ l.link }}{\VAR{ l.display }}\BLOCK{ endfor }}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SUMMARY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cvsection{\VAR{ i18n.profile }}
+\BLOCK{ if profile is string }
+\VAR{ profile }
+\BLOCK{ else }
+\begin{itemize}
+\BLOCK{ for item in profile }
+\item \VAR{ item }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+
+\BLOCK{ if desiderata }
+\cvsection{\VAR{ i18n.desiderata }}
+\BLOCK{ if desiderata is string }
+\VAR{ desiderata }
+\BLOCK{ else }
+\begin{itemize}
+\BLOCK{ for item in desiderata }
+\item \VAR{ item }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+\BLOCK{ endif }
+
+%%%%%%%%%%%%% EXPERIENCE — placed first per the reverse-chron standard %%%%%%%%%%
+\cvsection{\VAR{ i18n.work_experiences }}
+\BLOCK{ for e in work_experiences }
+{\bfseries \VAR{ e.title }}, \VAR{ e.company }\dates{\VAR{ e.dates }}\\
+\VAR{ e.description }\par
+\BLOCK{ if 'items' in e }
+\begin{itemize}
+\BLOCK{ for it in e['items'] }
+\item \textbf{\VAR{ it.project }:} \VAR{ it.text }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+\vspace{0.9ex}
+\BLOCK{ endfor }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% EDUCATION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cvsection{\VAR{ i18n.education }}
+\BLOCK{ for ed in education }
+{\bfseries \VAR{ ed.title }}, \VAR{ ed.institution }\dates{\VAR{ i18n.grade_label } \VAR{ ed.grade }}\par
+\BLOCK{ endfor }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SKILLS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cvsection{\VAR{ i18n.key_competences }}
+\BLOCK{ for c in key_competences }
+\textbf{\VAR{ c.name }.} \VAR{ c.text }\par\vspace{0.3ex}
+\BLOCK{ endfor }
+
+\BLOCK{ if transversal_competences }
+\cvsection{\VAR{ i18n.transversal_competences }}
+\BLOCK{ for c in transversal_competences }
+\textbf{\VAR{ c.name }.} \VAR{ c.text }\par\vspace{0.3ex}
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\cvsection{\VAR{ i18n.languages }}
+\VAR{ languages | join(', ') }
+
+\end{document}

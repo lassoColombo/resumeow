@@ -1,0 +1,123 @@
+\#{ resumeow — "swiss": minimalist single-column CV in the International Typographic Style. Section labels live in a fixed left gutter (placed with \llap so body text still flows and page-breaks naturally); one small photo; grayscale only — the YAML `color` is used solely as a near-black ink for labels and hairlines. Same data + same render.py as default.tex. }
+% !TeX program = pdflatex
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage[left=22mm, right=20mm, top=18mm, bottom=18mm]{geometry}
+\usepackage[stretch=25, shrink=25, tracking=true]{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\usepackage{FiraSans}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- Palette: grayscale only. `ink` comes from the YAML `color` (a near-black),
+% everything else is a tint of gray. No accent hue -> deliberate minimality. ----
+\definecolor{ink}{HTML}{\VAR{ color }}
+\definecolor{mute}{gray}{0.45}   % secondary text: dates, meta labels
+\definecolor{hair}{gray}{0.80}   % hairline rules
+\definecolor{chip}{gray}{0.94}   % tool-chip background
+
+% Left gutter geometry: section labels sit in `\labelw`, body starts at `\gutter`.
+\newlength{\gutter}\setlength{\gutter}{34mm}
+\newlength{\labelw}\setlength{\labelw}{27mm}
+
+% Inline "tool chip" — minimal monospace token, faint gray plate (see YAML \tool{}).
+\newcommand{\tool}[1]{{\setlength{\fboxsep}{2pt}\colorbox{chip}{\footnotesize\ttfamily #1}}}
+
+% Section label dropped into the left gutter; body keeps flowing beside/under it.
+\newcommand{\sect}[1]{%
+  \par\addvspace{2.6ex}%
+  \noindent\llap{\smash{\parbox[t]{\labelw}{\raggedright\footnotesize\bfseries\scshape\color{ink}\textls[40]{#1}}}\hspace{\dimexpr\gutter-\labelw\relax}}%
+  \ignorespaces}
+\newcommand{\dates}[1]{\hfill{\small\color{mute}#1}}
+
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5ex}
+\setlist{nosep, leftmargin=1.3em, label={\textcolor{hair}{\textbf{\textendash}}}}
+
+\begin{document}
+\pagestyle{empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% HEADER: name + contacts + photo %%%%%%%%%%%%%%%%%%%%%%
+\noindent
+\begin{minipage}[b]{\dimexpr\linewidth-32mm\relax}
+  {\fontsize{25}{28}\selectfont\bfseries\textls[30]{\VAR{ name }}}\par
+  \vspace{1.4ex}
+  {\footnotesize\color{mute}%
+    \VAR{ contacts.mail }\enspace\textbullet\enspace \VAR{ contacts.phone }%
+    \BLOCK{ for l in contacts.links or [] }\\[0.3ex]\href{\VAR{ l.link }}{\VAR{ l.display }}\BLOCK{ if not loop.last }\enspace\textbullet\enspace\BLOCK{ endif }\BLOCK{ endfor }%
+  }
+\end{minipage}\hfill
+\begin{minipage}[b]{28mm}
+  \raggedleft\includegraphics[width=28mm]{\VAR{ img }}
+\end{minipage}
+
+\vspace{1.6ex}
+{\color{ink}\rule{\linewidth}{1.1pt}}
+\vspace{0.4ex}
+
+% Everything below is indented; section labels \llap into the freed-up gutter.
+\setlength{\leftskip}{\gutter}
+
+\sect{\VAR{ i18n.profile }}
+\BLOCK{ if profile is string }
+\VAR{ profile }
+\BLOCK{ else }
+\begin{itemize}
+\BLOCK{ for item in profile }
+\item \VAR{ item }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+
+\sect{\VAR{ i18n.desiderata }}
+\BLOCK{ if desiderata is string }
+\VAR{ desiderata }
+\BLOCK{ else }
+\begin{itemize}
+\BLOCK{ for item in desiderata }
+\item \VAR{ item }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+
+\sect{\VAR{ i18n.languages }}
+\VAR{ languages | join(' \\ \\textbullet\\ ') }
+
+\sect{\VAR{ i18n.key_competences }}
+\BLOCK{ for c in key_competences }
+{\bfseries\color{ink}\VAR{ c.name }.}\enspace{}\VAR{ c.text }\par\addvspace{0.6ex}
+\BLOCK{ endfor }
+
+\BLOCK{ if transversal_competences }
+\sect{\VAR{ i18n.transversal_competences }}
+\BLOCK{ for c in transversal_competences }
+{\bfseries\color{ink}\VAR{ c.name }.}\enspace{}\VAR{ c.text }\par\addvspace{0.6ex}
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\sect{\VAR{ i18n.work_experiences }}
+\BLOCK{ for e in work_experiences }
+{\bfseries\color{ink}\VAR{ e.title }}\,\textcolor{mute}{— \VAR{ e.company }}\dates{\VAR{ e.dates }}\\
+\VAR{ e.description }\par
+\BLOCK{ if 'items' in e }
+\begin{itemize}
+\BLOCK{ for it in e['items'] }
+\item \textbf{\VAR{ it.project }:} \VAR{ it.text }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+\addvspace{1.0ex}
+\BLOCK{ endfor }
+
+\sect{\VAR{ i18n.education }}
+\BLOCK{ for ed in education }
+{\bfseries\color{ink}\VAR{ ed.title }}\,\textcolor{mute}{— \VAR{ ed.institution }}\dates{\VAR{ i18n.grade_label } \VAR{ ed.grade }}\par\addvspace{0.3ex}
+\BLOCK{ endfor }
+
+\end{document}

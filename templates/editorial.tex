@@ -1,0 +1,117 @@
+\#{ resumeow — "editorial": a serene, centered single-column CV that reads like the opening of a printed essay. One circular photo, generous whitespace, centered small-caps section titles. Grayscale only: the YAML `color` is used purely as a near-black ink. The profile doubles as a centered lead paragraph. Same data + same render.py as default.tex. }
+% !TeX program = pdflatex
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage[left=30mm, right=30mm, top=24mm, bottom=22mm]{geometry}
+\usepackage[stretch=25, shrink=25, tracking=true]{microtype}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{enumitem}
+
+\usepackage{FiraSans}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- Grayscale palette. `ink` = YAML `color` (near-black); rest are gray tints. --
+\definecolor{ink}{HTML}{\VAR{ color }}
+\definecolor{mute}{gray}{0.45}
+\definecolor{hair}{gray}{0.82}
+\definecolor{chip}{gray}{0.94}
+
+\newcommand{\tool}[1]{{\setlength{\fboxsep}{2pt}\colorbox{chip}{\footnotesize\ttfamily #1}}}
+
+% Circular photo: clip a centered square crop of the image to a disk.
+\newcommand{\avatar}[2]{% #1 = diameter, #2 = file
+  \begin{tikzpicture}
+    \clip (0,0) circle (0.5*#1);
+    \node at (0,0) {\includegraphics[width=#1,height=#1]{#2}};
+    \draw[hair, line width=0.4pt] (0,0) circle (0.5*#1);
+  \end{tikzpicture}}
+
+% Centered small-caps section title with a short rule beneath it.
+\newcommand{\sect}[1]{%
+  \par\addvspace{3.2ex}%
+  {\centering\footnotesize\bfseries\scshape\color{ink}\textls[220]{#1}\par}%
+  \vspace{0.7ex}{\centering\color{ink}\rule{1.6em}{0.5pt}\par}%
+  \vspace{1.6ex}}
+\newcommand{\dates}[1]{\hfill{\small\color{mute}#1}}
+
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5ex}
+\setlist{nosep, leftmargin=1.3em, label={\textcolor{hair}{\textbf{\textendash}}}}
+
+\begin{document}
+\pagestyle{empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CENTERED HEADER %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}
+  \avatar{30mm}{\VAR{ img }}\par
+  \vspace{2.2ex}
+  {\fontsize{27}{31}\selectfont\textls[50]{\VAR{ name }}}\par
+  \vspace{1.6ex}
+  {\footnotesize\color{mute}%
+    \VAR{ contacts.mail }\quad\textbullet\quad \VAR{ contacts.phone }%
+    \BLOCK{ for l in contacts.links or [] }\\[0.5ex]\href{\VAR{ l.link }}{\VAR{ l.display }}\BLOCK{ if not loop.last }\quad\textbullet\quad\BLOCK{ endif }\BLOCK{ endfor }%
+  }
+\end{center}
+
+% Profile as a centered lead paragraph (its own section header omitted on purpose).
+\vspace{2.4ex}
+\begingroup\itshape\color{ink!85!black}
+\begin{center}
+\begin{minipage}{0.86\linewidth}\centering
+\BLOCK{ if profile is string }\VAR{ profile }\BLOCK{ else }\VAR{ profile | join(' ') }\BLOCK{ endif }
+\end{minipage}
+\end{center}
+\endgroup
+
+\sect{\VAR{ i18n.desiderata }}
+\BLOCK{ if desiderata is string }
+\VAR{ desiderata }
+\BLOCK{ else }
+\begin{itemize}
+\BLOCK{ for item in desiderata }
+\item \VAR{ item }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+
+\sect{\VAR{ i18n.key_competences }}
+\BLOCK{ for c in key_competences }
+{\bfseries\color{ink}\VAR{ c.name }.}\enspace{}\VAR{ c.text }\par\addvspace{0.7ex}
+\BLOCK{ endfor }
+
+\BLOCK{ if transversal_competences }
+\sect{\VAR{ i18n.transversal_competences }}
+\BLOCK{ for c in transversal_competences }
+{\bfseries\color{ink}\VAR{ c.name }.}\enspace{}\VAR{ c.text }\par\addvspace{0.7ex}
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\sect{\VAR{ i18n.work_experiences }}
+\BLOCK{ for e in work_experiences }
+{\bfseries\color{ink}\VAR{ e.title }}\,\textcolor{mute}{— \VAR{ e.company }}\dates{\VAR{ e.dates }}\\
+\VAR{ e.description }\par
+\BLOCK{ if 'items' in e }
+\begin{itemize}
+\BLOCK{ for it in e['items'] }
+\item \textbf{\VAR{ it.project }:} \VAR{ it.text }
+\BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+\addvspace{1.1ex}
+\BLOCK{ endfor }
+
+\sect{\VAR{ i18n.languages }}
+{\centering \VAR{ languages | join('\\quad\\textbullet\\quad ') }\par}
+
+\sect{\VAR{ i18n.education }}
+\BLOCK{ for ed in education }
+{\bfseries\color{ink}\VAR{ ed.title }}\,\textcolor{mute}{— \VAR{ ed.institution }}\dates{\VAR{ i18n.grade_label } \VAR{ ed.grade }}\par\addvspace{0.3ex}
+\BLOCK{ endfor }
+
+\end{document}
