@@ -1,4 +1,4 @@
-\#{ resumeow — "sleek": refined two-column sidebar layout. Same data + same render.py as default.tex; only this file differs. Reuses default.tex's proven two-block pagination (sidebar+competences, then strip+experiences) so content flows across pages without overflow; restyles headers, competence titles, dividers and tool chips. }
+\#{ resumeow — "sleek": refined two-column sidebar layout. Same data + same render.py as default.tex; only this file differs. The main column is a flowfram text flow, so competences/experiences of any length paginate by themselves: page 1 sits beside the full sidebar, later pages beside a thin accent strip. }
 % !TeX program = pdflatex
 \documentclass[11pt, a4paper]{article}
 
@@ -33,30 +33,56 @@
 % Main header: accent small caps + short accent underline.
 \newcommand{\headright}[1]{\vspace*{2.6ex}{\Large\bfseries\scshape\color{accent}\textls[50]{#1}}\par%
     \vspace*{0.1ex}{\color{accent}\rule{3.2em}{1.2pt}}\par\vspace*{1.0ex}}
-% A key/transversal competence: bold accent title, body underneath.
-\newcommand{\competence}[2]{{\bfseries\color{accent}#1}\par\vspace{0.3em}#2\par\vspace{0.7em}}
+% A key/transversal competence: bold accent title, body underneath. No box
+% around it, so a long list flows across frames; the \nopagebreak pair only
+% forbids a break *between* the title and its body.
+\newcommand{\competence}[2]{{\bfseries\color{accent}#1}\par\nopagebreak\vspace{0.3em}\nopagebreak#2\par\vspace{0.7em}}
+
+%%%%%%%%%%%%%% PAGE FRAMES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Every frame below is derived from these lengths: tune them, not the frame
+% definitions.
+\newlength{\cvband}\setlength{\cvband}{0.33\paperwidth}     % page-1 sidebar
+\newlength{\cvstrip}\setlength{\cvstrip}{0.1\paperwidth}    % page 2+ accent strip
+\newlength{\cvpad}\setlength{\cvpad}{6.5mm}                 % sidebar inner padding
+\newlength{\cvgutter}\setlength{\cvgutter}{8mm}             % band -> text gap
+\newlength{\cvrmargin}\setlength{\cvrmargin}{14mm}
+\newlength{\cvtmargin}\setlength{\cvtmargin}{10mm}
+\newlength{\cvbmargin}\setlength{\cvbmargin}{12mm}
+
+\usepackage{flowfram}
+
+% Coloured bands: full-bleed, no content of their own.
+\newstaticframe[1]{\cvband}{\paperheight}{0pt}{0pt}[band]
+\newstaticframe[>1]{\cvstrip}{\paperheight}{0pt}{0pt}[strip]
+\setstaticframe*{band,strip}{backcolor=sidebar}
+
+% The sidebar text sits in its own frame, inset inside the band (page 1 only).
+\newstaticframe[1]{\dimexpr\cvband-2\cvpad\relax}%
+  {\dimexpr\paperheight-\cvtmargin-\cvbmargin\relax}{\cvpad}{\cvbmargin}[sbtext]
+\setstaticframe*{sbtext}{textcolor=white}
+
+% The main column: one continuous flow. Narrow beside the sidebar on page 1,
+% wide beside the strip afterwards -- LaTeX moves the text between them.
+\newflowframe[1]{\dimexpr\paperwidth-\cvband-\cvgutter-\cvrmargin\relax}%
+  {\dimexpr\paperheight-\cvtmargin-\cvbmargin\relax}%
+  {\dimexpr\cvband+\cvgutter\relax}{\cvbmargin}[maincol]
+\newflowframe[>1]{\dimexpr\paperwidth-\cvstrip-\cvgutter-\cvrmargin\relax}%
+  {\dimexpr\paperheight-\cvtmargin-\cvbmargin\relax}%
+  {\dimexpr\cvstrip+\cvgutter\relax}{\cvbmargin}[maincolwide]
 
 \usepackage[colorlinks = true, urlcolor = white, linkcolor = accent]{hyperref}
 
 \begin{document}
-\setlength{\topskip}{0pt}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt}
 \setlength{\fboxsep}{0pt}
 \pagestyle{empty}
 \raggedbottom
 
-%%%%%%%%%%%%%% BLOCK 1: sidebar + key competences (page 1) %%%%%%%%%%%%%%%%%%%
-\begin{minipage}[t]{0.33\textwidth}
-\colorbox{sidebar}{\begin{minipage}[t][5mm][t]{\textwidth}\null\hfill\null\end{minipage}}
-
-\vspace{-.2ex}
-\colorbox{sidebar}{\color{white}%
-\kern0.09\textwidth\relax
-\begin{minipage}[t][293mm][t]{0.82\textwidth}
+%%%%%%%%%%%%%% SIDEBAR CONTENT (static, page 1) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setstaticcontents*{sbtext}{%
 \raggedright
-\vspace*{1.5ex}
-\null\hfill\includegraphics[width=0.62\textwidth]{\VAR{ img }}\hfill\null
+\null\hfill\includegraphics[width=0.75\linewidth]{\VAR{ img }}\hfill\null
 \vspace*{1.5ex}
 \begin{center}{\Large\bfseries\textls[30]{\VAR{ name }}}\end{center}
 
@@ -96,28 +122,13 @@
 \BLOCK{ for link in contacts.links or [] }
 \\[0.5ex]\Mundus\ \href{\VAR{ link.link }}{\VAR{ link.display }}
 \BLOCK{ endfor }
+}%
 }
-\end{minipage}%
-\kern0.09\textwidth\relax}
-\end{minipage}%
-\hskip2.2em
-\begin{minipage}[t]{0.56\textwidth}
-\setlength{\parskip}{0pt}
-\vspace{2ex}
+
 \headright{\VAR{ i18n.key_competences }}
 \BLOCK{ for c in key_competences }
 \competence{\VAR{ c.name }}{\smaller{\VAR{ c.text }}}
 \BLOCK{ endfor }
-\end{minipage}
-
-%%%%%%%%%%%%%% BLOCK 2: thin accent strip + experiences (page 2) %%%%%%%%%%%%%
-\begin{minipage}[t]{0.1\textwidth}
-\colorbox{sidebar}{\begin{minipage}[t][300mm][t]{\textwidth}\null\hfill\null\end{minipage}}
-\end{minipage}%
-\hskip2.2em
-\begin{minipage}[t]{0.782\textwidth}
-\setlength{\parskip}{0pt}
-\vspace{2ex}
 
 \BLOCK{ if transversal_competences }
 \headright{\VAR{ i18n.transversal_competences }}
@@ -128,7 +139,7 @@
 
 \headright{\VAR{ i18n.work_experiences }}
 \BLOCK{ for e in work_experiences }
-{\bfseries \VAR{ e.title }}\ \textit{— \VAR{ e.company }}\dates{\VAR{ e.dates }}\par\vspace{0.3em}
+{\bfseries \VAR{ e.title }}\ \textit{— \VAR{ e.company }}\dates{\VAR{ e.dates }}\par\nopagebreak\vspace{0.3em}\nopagebreak
 \evensmaller{\VAR{ e.description }}
 \BLOCK{ if 'items' in e }
 \begin{itemize}
@@ -137,7 +148,11 @@
 \BLOCK{ endfor }
 \end{itemize}
 \BLOCK{ endif }
+\BLOCK{ if not loop.last }
 \par\vspace{0.5em}{\color{accent!25}\hrulefill}\par\vspace{0.5em}
+\BLOCK{ else }
+\par\vspace{0.5em}
+\BLOCK{ endif }
 \BLOCK{ endfor }
 
 \headright{\VAR{ i18n.education }}
@@ -147,5 +162,4 @@
 \BLOCK{ endfor }
 \end{itemize}
 
-\end{minipage}
 \end{document}
